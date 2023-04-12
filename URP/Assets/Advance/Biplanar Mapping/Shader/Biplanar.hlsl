@@ -3,8 +3,8 @@
 
 // Biplanar mapping for color textures
 void Biplanar_float
-  (Texture2D tex, SamplerState samp,
-   float3 wpos, float3 wnrm, out float4 output)
+(Texture2D tex, SamplerState samp,
+float3 wpos, float3 wnrm, out float4 output)
 {
     // Coordinate derivatives for texturing
     float3 p = wpos;
@@ -14,27 +14,27 @@ void Biplanar_float
 
     // Major axis (in x; yz are following axis)
     uint3 ma = (n.x > n.y && n.x > n.z) ? uint3(0, 1, 2) :
-               (n.y > n.z             ) ? uint3(1, 2, 0) :
-                                          uint3(2, 0, 1) ;
+    (n.y > n.z) ? uint3(1, 2, 0) :
+    uint3(2, 0, 1) ;
 
     // Minor axis (in x; yz are following axis)
     uint3 mi = (n.x < n.y && n.x < n.z) ? uint3(0, 1, 2) :
-               (n.y < n.z             ) ? uint3(1, 2, 0) :
-                                          uint3(2, 0, 1) ;
+    (n.y < n.z) ? uint3(1, 2, 0) :
+    uint3(2, 0, 1) ;
 
     // Median axis (in x; yz are following axis)
     uint3 me = 3 - mi - ma;
 
     // Project + fetch
     float4 x = SAMPLE_TEXTURE2D_GRAD(tex, samp,
-                                     float2(   p[ma.y],    p[ma.z]), 
-                                     float2(dpdx[ma.y], dpdx[ma.z]), 
-                                     float2(dpdy[ma.y], dpdy[ma.z]));
+    float2(p[ma.y], p[ma.z]),
+    float2(dpdx[ma.y], dpdx[ma.z]),
+    float2(dpdy[ma.y], dpdy[ma.z]));
 
     float4 y = SAMPLE_TEXTURE2D_GRAD(tex, samp,
-                                     float2(   p[me.y],    p[me.z]), 
-                                     float2(dpdx[me.y], dpdx[me.z]),
-                                     float2(dpdy[me.y], dpdy[me.z]));
+    float2(p[me.y], p[me.z]),
+    float2(dpdx[me.y], dpdx[me.z]),
+    float2(dpdy[me.y], dpdy[me.z]));
 
     // Blend factors
     float2 w = float2(n[ma.x], n[me.x]);
@@ -48,8 +48,8 @@ void Biplanar_float
 
 // Biplanar mapping for normal maps
 void BiplanarNormal_float
-  (Texture2D tex, SamplerState samp,
-   float3 wpos, float3 wtan, float3 wbtn, float3 wnrm, out float3 output)
+(Texture2D tex, SamplerState samp,
+float3 wpos, float3 wtan, float3 wbtn, float3 wnrm, out float3 output)
 {
     // Coordinate derivatives for texturing
     float3 p = wpos;
@@ -59,27 +59,27 @@ void BiplanarNormal_float
 
     // Major axis (in x; yz are following axis)
     uint3 ma = (n.x > n.y && n.x > n.z) ? uint3(0, 1, 2) :
-               (n.y > n.z             ) ? uint3(1, 2, 0) :
-                                          uint3(2, 0, 1) ;
+    (n.y > n.z) ? uint3(1, 2, 0) :
+    uint3(2, 0, 1) ;
 
     // Minor axis (in x; yz are following axis)
     uint3 mi = (n.x < n.y && n.x < n.z) ? uint3(0, 1, 2) :
-               (n.y < n.z             ) ? uint3(1, 2, 0) :
-                                          uint3(2, 0, 1) ;
+    (n.y < n.z) ? uint3(1, 2, 0) :
+    uint3(2, 0, 1) ;
 
     // Median axis (in x; yz are following axis)
     uint3 me = 3 - mi - ma;
 
     // Project + fetch
     float4 x = SAMPLE_TEXTURE2D_GRAD(tex, samp,
-                                     float2(   p[ma.y],    p[ma.z]), 
-                                     float2(dpdx[ma.y], dpdx[ma.z]), 
-                                     float2(dpdy[ma.y], dpdy[ma.z]));
+    float2(p[ma.y], p[ma.z]),
+    float2(dpdx[ma.y], dpdx[ma.z]),
+    float2(dpdy[ma.y], dpdy[ma.z]));
 
     float4 y = SAMPLE_TEXTURE2D_GRAD(tex, samp,
-                                     float2(   p[me.y],    p[me.z]), 
-                                     float2(dpdx[me.y], dpdx[me.z]),
-                                     float2(dpdy[me.y], dpdy[me.z]));
+    float2(p[me.y], p[me.z]),
+    float2(dpdx[me.y], dpdx[me.z]),
+    float2(dpdy[me.y], dpdy[me.z]));
 
     // Normal vector extraction
     float3 n1 = UnpackNormalmapRGorAG(x);
