@@ -112,7 +112,8 @@ Shader "TALibrary/Triplanar"
                 float3 bitangent = sgn * cross(input.normalWS.xyz, input.tangentWS.xyz);
                 TriplanarNormal_float(_NormalTex, sampler_NormalTex, worldUV, input.normalWS, input.tangentWS, bitangent, _Smooth, normalTS);
 
-                half3x3 tangentToWorld = half3x3(input.tangentWS.xyz, bitangent.xyz, input.normalWS.xyz);
+                //这里bitanget 用abs处理 避免转角处法线反转的问题
+                half3x3 tangentToWorld = half3x3(input.tangentWS.xyz, abs(bitangent.xyz), input.normalWS.xyz);
                 float3 normalWS = TransformTangentToWorld(normalTS, tangentToWorld);
 
                 InputData inputData = (InputData)0;
